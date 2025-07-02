@@ -1,0 +1,44 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+out/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# User-specific files
+*.swp
+*.bak
+*.tmp
+*.tmp_proj
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Others
+*.dbmdl
+*.jfm
+
+# Rider
+.idea/
+*.sln.iml
