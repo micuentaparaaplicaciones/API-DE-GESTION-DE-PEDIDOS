@@ -2,7 +2,7 @@
 {
     public class User
     {
-        public int Key { get; set; } // se genera automáticamente
+        public int Key { get; set; } // Automatically generated
 
         public string Identification { get; set; } = string.Empty;
 
@@ -14,22 +14,22 @@
 
         public string Address { get; set; } = string.Empty;
 
-        public string Password { get; set; } = string.Empty; // se hashea manualmente
+        public string Password { get; set; } = string.Empty; // Manually hashed
 
         public string Role { get; set; } = string.Empty;
 
-        public DateTime RegistrationDate { get; set; } // se establece automáticamente
+        public DateTime RegistrationDate { get; set; } // Automatically set
 
-        public DateTime? ModificationDate { get; set; } // se establece automáticamente
+        public DateTime? ModificationDate { get; set; } // Automatically set
 
         public int? CreatedBy { get; set; }
 
         public int? ModifiedBy { get; set; }
 
-        public long RowVersion { get; set; } // se genera automáticamente
+        public long RowVersion { get; set; } // Automatically generated
 
-        public virtual User? CreatedByUser { get; set; } // relación opcional 
+        public virtual User? CreatedByUser { get; set; } // Optional relationship
 
-        public virtual User? ModifiedByUser { get; set; } // relación opcional 
+        public virtual User? ModifiedByUser { get; set; } // Optional relationship
     }
 }

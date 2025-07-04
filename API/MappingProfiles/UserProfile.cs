@@ -4,6 +4,9 @@ using AutoMapper;
 
 namespace API.MappingProfiles
 {
+    /// <summary>
+    /// Maps between User entity and User DTOs for data transfer operations. 
+    /// </summary>
     public class UserProfile : Profile
     {
         public UserProfile()
@@ -13,13 +16,13 @@ namespace API.MappingProfiles
 
             // CreateDto → Entity
             CreateMap<UserCreateDto, User>()
-                .ForMember(dest => dest.Key, opt => opt.Ignore()) // se genera automáticamente
-                .ForMember(dest => dest.Password, opt => opt.Ignore()) // se hashea manualmente
-                .ForMember(dest => dest.RegistrationDate, opt => opt.Ignore()) // se establece automáticamente
-                .ForMember(dest => dest.ModificationDate, opt => opt.Ignore()) // se establece automáticamente
-                .ForMember(dest => dest.CreatedByUser, opt => opt.Ignore()) // relación opcional 
-                .ForMember(dest => dest.ModifiedByUser, opt => opt.Ignore()) // relación opcional  
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore()); // se genera automáticamente
+                .ForMember(dest => dest.Key, opt => opt.Ignore()) // Automatically generated
+                .ForMember(dest => dest.Password, opt => opt.Ignore()) // Manually hashed
+                .ForMember(dest => dest.RegistrationDate, opt => opt.Ignore()) // Automatically set
+                .ForMember(dest => dest.ModificationDate, opt => opt.Ignore()) // Automatically set
+                .ForMember(dest => dest.CreatedByUser, opt => opt.Ignore()) // Optional relationship
+                .ForMember(dest => dest.ModifiedByUser, opt => opt.Ignore()) // Optional relationship 
+                .ForMember(dest => dest.RowVersion, opt => opt.Ignore()); // Automatically generated
 
             // UpdateDto → Entity
             CreateMap<UserUpdateDto, User>()

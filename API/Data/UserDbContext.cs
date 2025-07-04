@@ -3,9 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
-    // El DbContext en EF Core actúa como unidad de trabajo y repositorio por defecto, y es una clase base del framework.
-    // Microsoft no recomienda (ni requiere) que le crees una interfaz.
-
     /// <summary>
     /// Represents the database context for user management. 
     /// </summary>

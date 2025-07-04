@@ -6,6 +6,9 @@ using System.Text.Json;
 
 namespace API.Middleware
 {
+    /// <summary>
+    /// Middleware for handling exceptions globally in the API. 
+    /// </summary>
     public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
         public async Task InvokeAsync(HttpContext context)

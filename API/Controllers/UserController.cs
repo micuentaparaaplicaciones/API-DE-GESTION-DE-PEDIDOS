@@ -4,10 +4,8 @@ using API.Dtos.UserDtos;
 using API.Entities;
 using API.Security.Interfaces;
 using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace API.Controllers
 {
@@ -27,7 +25,6 @@ namespace API.Controllers
         private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         private readonly IUserSecurityService _userSecurityService = userSecurityService ?? throw new ArgumentNullException(nameof(userSecurityService));
 
-        //[HttpGet("{key:int}")]
         [HttpGet("{key:int}", Name = "GetUserByKey")]
         public async Task<ActionResult<UserReadDto>> GetUserByKeyAsync(int key)
         {
@@ -36,7 +33,6 @@ namespace API.Controllers
             if (user == null)
                 return NotFound(new { message = $"User with key {key} not found." });
 
-            // Este es un mapeo hacia una nueva instancia UserReadDto.
             return Ok(_mapper.Map<UserReadDto>(user));
         }
 
@@ -74,15 +70,15 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Conflicto real: Constructor simplificado en C# 12 y endpoints en ASP.NET Core 8/7.
-        /// Tu controlador usa la nueva sintaxis de constructor simplificado de C#: Este patrón es perfectamente válido, 
-        /// pero en algunas versiones de ASP.NET Core (especialmente 7 y 8),
-        /// combinado con CreatedAtAction(...), puede provocar que el sistema no asigne correctamente el ActionDescriptor.RouteValues["action"], 
-        /// lo que rompe el enrutamiento de respuesta. 
-        /// Para resolver tenemos dos opciones: 
-        /// 1. Usa el constructor clásico completo de C# en lugar del simplificado.
-        /// 2. Agrega manualmente el nombre de la acción al atributo [HttpGet] usando Name = "..."], así: [HttpGet("{key:int}", Name = "GetUserByKey")] y 
-        /// retornando CreatedAtRoute así: return CreatedAtRoute("GetUserByKey", new { key = user.Key }, userReadDto);
+        /// Real conflict: Simplified constructor in C# 12 and endpoints in ASP.NET Core 8/7.
+        /// Your controller uses the new C# simplified constructor syntax, which is perfectly valid.
+        /// However, in some versions of ASP.NET Core (especially 7 and 8), when combined with CreatedAtAction(...),
+        /// the system may fail to correctly assign ActionDescriptor.RouteValues["action"],
+        /// which breaks response routing.
+        /// To resolve this, you have two options:
+        /// 1. Use the full classic constructor instead of the simplified one.
+        /// 2. Manually specify the action name in the [HttpGet] attribute using Name = "...", like: [HttpGet("{key:int}", Name = "GetUserByKey")],
+        ///     and return with CreatedAtRoute like: return CreatedAtRoute("GetUserByKey", new { key = user.Key }, userReadDto);
         /// </summary>
         [HttpPost]
         public async Task<ActionResult<UserReadDto>> AddUserAsync(UserCreateDto userCreateDto)
@@ -102,9 +98,6 @@ namespace API.Controllers
 
             var userReadDto = _mapper.Map<UserReadDto>(user);
 
-            Console.WriteLine($"User.Key después de reload: {userReadDto.Key}");
-
-            //return CreatedAtAction(nameof(GetUserByKeyAsync), new { key = user.Key }, userReadDto);
             return CreatedAtRoute("GetUserByKey", new { key = user.Key }, userReadDto);
 
         }
@@ -126,13 +119,13 @@ namespace API.Controllers
             if (!Success)
                 return BadRequest(new { message = ErrorMessage });
 
-            // Este es un mapeo sobre una instancia ya existente.
+            // This is a mapping over an existing instance.
             _mapper.Map(userUpdateDto, existingUser);
 
             if (_userSecurityService.NeedsRehash(existingUser, userUpdateDto.Password))
                 existingUser.Password = _userSecurityService.HashPassword(existingUser, userUpdateDto.Password);
 
-            // Es necesario para controlar una situación esperada.
+            // This is necessary to handle an expected situation.
             try
             {
                 await _userDataService.UpdateUserAsync(existingUser);

@@ -41,9 +41,10 @@ namespace API.DataServices
         }
 
         /// <summary>
-        /// Estás manejando concurrencia optimista personalizada, no la automática de EF Core con [Timestamp]. 
-        /// Por eso, EF Core no detectará por sí solo los conflictos de concurrencia: tienes que hacerlo tú.
-        /// Aquí la validación de RowVersion es manual, porque el trigger de Oracle lo incrementa, y EF no tiene cómo saber que eso pasó.
+        /// You are handling custom optimistic concurrency, not EF Core's automatic [Timestamp]-based mechanism.
+        /// Therefore, EF Core will not detect concurrency conflicts on its own—you have to handle them manually.
+        /// Here, RowVersion validation is done manually because an Oracle trigger increments it,
+        /// and EF has no way of knowing that happened.
         /// </summary>
         public async Task UpdateUserAsync(User user)
         {
@@ -51,11 +52,11 @@ namespace API.DataServices
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Key == user.Key) ?? throw new InvalidOperationException($"User with key {user.Key} not found.");
 
-            // Validación manual de concurrencia
+            // Manual concurrency validation 
             if (originalUser.RowVersion != user.RowVersion)
                 throw new DbUpdateConcurrencyException("RowVersion conflict: the user was modified by another user.");
 
-            // Comparar si hubo algún cambio
+            // Check if any changes occurred 
             bool isModified = originalUser.Identification != user.Identification ||
                               originalUser.Name != user.Name ||
                               originalUser.Email != user.Email ||
@@ -64,14 +65,14 @@ namespace API.DataServices
                               originalUser.Role != user.Role ||
                               originalUser.ModifiedBy != user.ModifiedBy;
 
-            // Si no hubo cambios reales
+            // If no real changes were made 
             if (!isModified)
-                return; // Nada que hacer
+                return;
 
-            // EF Core rastreará este nuevo objeto con los datos actualizados
+            // EF Core will track this new object with the updated data 
             _userDbContext.Users.Update(user);
 
-            await _userDbContext.SaveChangesAsync(); // el trigger en la DB incrementará ROWVERSION
+            await _userDbContext.SaveChangesAsync(); // The trigger in the DB will increment ROWVERSION 
         }
 
         public async Task DeleteUserAsync(int key)

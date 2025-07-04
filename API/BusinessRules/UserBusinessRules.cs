@@ -1,9 +1,6 @@
 ﻿using API.BusinessRules.Interfaces;
-using API.Data;
-using API.DataServices;
 using API.DataServices.Interfaces;
 using API.Dtos.UserDtos;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.BusinessRules
 {
