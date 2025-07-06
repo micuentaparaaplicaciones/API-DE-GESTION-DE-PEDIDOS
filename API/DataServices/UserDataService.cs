@@ -8,36 +8,36 @@ namespace API.DataServices
     /// <summary>
     /// Provides data access methods for user management, including CRUD operations.
     /// </summary>
-    public class UserDataService(UserDbContext userDbContext) : IUserDataService
+    public class UserDataService(ApplicationDbContext applicationDbContext) : IUserDataService
     {
-        private readonly UserDbContext _userDbContext = userDbContext;
+        private readonly ApplicationDbContext _applicationDbContext = applicationDbContext;
 
         public async Task<User?> GetUserByKeyAsync(int key)
         {
-            return await _userDbContext.Users.FindAsync(key);
+            return await _applicationDbContext.Users.FindAsync(key);
         }
 
         public async Task<User?> GetUserByIdentificationAsync(string identification)
         {
-            return await _userDbContext.Users
+            return await _applicationDbContext.Users
                 .FirstOrDefaultAsync(u => u.Identification == identification);
         }
 
         public async Task<User?> GetUserByEmailAsync(string email)
         {
-            return await _userDbContext.Users
+            return await _applicationDbContext.Users
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            return await _userDbContext.Users.ToListAsync();
+            return await _applicationDbContext.Users.ToListAsync();
         }
 
         public async Task AddUserAsync(User user)
         {
-            await _userDbContext.Users.AddAsync(user);
-            await _userDbContext.SaveChangesAsync();
+            await _applicationDbContext.Users.AddAsync(user);
+            await _applicationDbContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace API.DataServices
         /// </summary>
         public async Task UpdateUserAsync(User user)
         {
-            var originalUser = await _userDbContext.Users
+            var originalUser = await _applicationDbContext.Users
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Key == user.Key) ?? throw new InvalidOperationException($"User with key {user.Key} not found.");
 
@@ -70,9 +70,9 @@ namespace API.DataServices
                 return;
 
             // EF Core will track this new object with the updated data 
-            _userDbContext.Users.Update(user);
+            _applicationDbContext.Users.Update(user);
 
-            await _userDbContext.SaveChangesAsync(); // The trigger in the DB will increment ROWVERSION 
+            await _applicationDbContext.SaveChangesAsync(); // The trigger in the DB will increment ROWVERSION 
         }
 
         public async Task DeleteUserAsync(int key)
@@ -80,8 +80,8 @@ namespace API.DataServices
             var user = await GetUserByKeyAsync(key);
             if (user != null)
             {
-                _userDbContext.Users.Remove(user);
-                await _userDbContext.SaveChangesAsync();
+                _applicationDbContext.Users.Remove(user);
+                await _applicationDbContext.SaveChangesAsync();
             }
         }
     }

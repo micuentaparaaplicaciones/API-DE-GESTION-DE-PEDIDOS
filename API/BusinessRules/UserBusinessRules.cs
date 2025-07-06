@@ -24,14 +24,14 @@ namespace API.BusinessRules
             return (true, null);
         }
 
-        public async Task<(bool Success, string? ErrorMessage)> ValidateUpdatedUserAsync(UserUpdateDto userCreateDto)
+        public async Task<(bool Success, string? ErrorMessage)> ValidateUpdatedUserAsync(UserUpdateDto userUpdateDto)
         {
-            var existingIdentificationUser = await _userDataService.GetUserByIdentificationAsync(userCreateDto.Identification);
-            if (existingIdentificationUser != null && existingIdentificationUser.Key != userCreateDto.Key)
+            var existingIdentificationUser = await _userDataService.GetUserByIdentificationAsync(userUpdateDto.Identification);
+            if (existingIdentificationUser != null && existingIdentificationUser.Key != userUpdateDto.Key)
                 return (false, "Identification is already in use by another user.");
 
-            var existingEmailUser = await _userDataService.GetUserByEmailAsync(userCreateDto.Email);
-            if (existingEmailUser != null && existingEmailUser.Key != userCreateDto.Key)
+            var existingEmailUser = await _userDataService.GetUserByEmailAsync(userUpdateDto.Email);
+            if (existingEmailUser != null && existingEmailUser.Key != userUpdateDto.Key)
                 return (false, "Email is already in use by another user.");
 
             return (true, null);

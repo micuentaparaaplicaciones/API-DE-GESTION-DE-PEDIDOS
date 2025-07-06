@@ -32,7 +32,10 @@ namespace APITests.Controllers
             _mockUserBusinessRules = new Mock<IUserBusinessRules>();
             _mockMapper = new Mock<IMapper>();
             _mockUserSecurityService = new Mock<IUserSecurityService>();
-            _userController = new UserController(_mockUserDataService.Object, _mockUserBusinessRules.Object, _mockMapper.Object, _mockUserSecurityService.Object);
+            _userController = new UserController(
+                _mockUserDataService.Object, _mockUserBusinessRules.Object, 
+                _mockMapper.Object, 
+                _mockUserSecurityService.Object);
         }
 
         #region Helpers
@@ -141,17 +144,17 @@ namespace APITests.Controllers
         public async Task GetUserByKeyAsync_ReturnsNotFound_WhenUserDoesNotExist()
         {
             // Arrange
-            int id = 0; // Non-existent ID
+            int key = 0; // Non-existent key
 
-            _mockUserDataService.Setup(s => s.GetUserByKeyAsync(id)).ReturnsAsync((User?)null);
+            _mockUserDataService.Setup(s => s.GetUserByKeyAsync(key)).ReturnsAsync((User?)null);
 
             // Act
-            var result = await _userController.GetUserByKeyAsync(id);
+            var result = await _userController.GetUserByKeyAsync(key);
 
             // Assert
             var notFoundResult = result.Result as NotFoundObjectResult;
             Assert.IsNotNull(notFoundResult);
-            _mockUserDataService.Verify(s => s.GetUserByKeyAsync(id), Times.Once);
+            _mockUserDataService.Verify(s => s.GetUserByKeyAsync(key), Times.Once);
         }
 
         #endregion
@@ -206,7 +209,7 @@ namespace APITests.Controllers
         {
             // Arrange
             var userCreateDto = GetSampleUserCreateDto();
-            var userEntity = GetSampleUser();
+            var user = GetSampleUser();
             var userReadDto = GetSampleUserReadDto();
 
             _mockUserBusinessRules
@@ -215,18 +218,18 @@ namespace APITests.Controllers
 
             _mockMapper
                 .Setup(m => m.Map<User>(userCreateDto))
-                .Returns(userEntity);
+                .Returns(user);
 
             _mockUserSecurityService
-                .Setup(s => s.HashPassword(userEntity, userCreateDto.Password))
+                .Setup(s => s.HashPassword(user, userCreateDto.Password))
                 .Returns("hashedPassword");
 
             _mockUserDataService
-                .Setup(s => s.AddUserAsync(userEntity))
+                .Setup(s => s.AddUserAsync(user))
                 .Returns(Task.CompletedTask);
 
             _mockMapper
-                .Setup(m => m.Map<UserReadDto>(userEntity))
+                .Setup(m => m.Map<UserReadDto>(user))
                 .Returns(userReadDto);
 
             // Act
@@ -239,7 +242,7 @@ namespace APITests.Controllers
             Assert.AreEqual(userReadDto, createdAtRoute.Value);
 
             _mockUserBusinessRules.Verify(r => r.ValidateNewUserAsync(userCreateDto), Times.Once);
-            _mockUserDataService.Verify(s => s.AddUserAsync(userEntity), Times.Once);
+            _mockUserDataService.Verify(s => s.AddUserAsync(user), Times.Once);
         }
 
         [TestMethod]
@@ -295,12 +298,28 @@ namespace APITests.Controllers
             var userUpdateDto = GetSampleUserUpdateDto();
             var user = GetSampleUser();
 
-            _mockUserDataService.Setup(s => s.GetUserByKeyAsync(userUpdateDto.Key)).ReturnsAsync(user);
-            _mockUserBusinessRules.Setup(r => r.ValidateUpdatedUserAsync(userUpdateDto)).ReturnsAsync((true, null));
-            _mockMapper.Setup(m => m.Map(userUpdateDto, user));
-            _mockUserSecurityService.Setup(s => s.NeedsRehash(user, userUpdateDto.Password)).Returns(true);
-            _mockUserSecurityService.Setup(s => s.HashPassword(user, userUpdateDto.Password)).Returns("new-hash");
-            _mockUserDataService.Setup(s => s.UpdateUserAsync(user)).Returns(Task.CompletedTask);
+            _mockUserDataService
+                .Setup(s => s.GetUserByKeyAsync(userUpdateDto.Key))
+                .ReturnsAsync(user);
+            
+            _mockUserBusinessRules
+                .Setup(r => r.ValidateUpdatedUserAsync(userUpdateDto))
+                .ReturnsAsync((true, null));
+            
+            _mockMapper
+                .Setup(m => m.Map(userUpdateDto, user));
+           
+            _mockUserSecurityService
+                .Setup(s => s.NeedsRehash(user, userUpdateDto.Password))
+                .Returns(true);
+           
+            _mockUserSecurityService
+                .Setup(s => s.HashPassword(user, userUpdateDto.Password))
+                .Returns("new-hash");
+            
+            _mockUserDataService
+                .Setup(s => s.UpdateUserAsync(user))
+                .Returns(Task.CompletedTask);
 
             // Act
             var result = await _userController.UpdateUserAsync(userUpdateDto.Key, userUpdateDto);
@@ -344,7 +363,10 @@ namespace APITests.Controllers
         {
             // Arrange
             var userUpdateDto = GetSampleUserUpdateDto();
-            _mockUserDataService.Setup(s => s.GetUserByKeyAsync(userUpdateDto.Key)).ReturnsAsync((User?)null);
+
+            _mockUserDataService
+                .Setup(s => s.GetUserByKeyAsync(userUpdateDto.Key))
+                .ReturnsAsync((User?)null);
 
             // Act
             var result = await _userController.UpdateUserAsync(userUpdateDto.Key, userUpdateDto);
@@ -361,8 +383,13 @@ namespace APITests.Controllers
             var userUpdateDto = GetSampleUserUpdateDto();
             var user = GetSampleUser();
 
-            _mockUserDataService.Setup(s => s.GetUserByKeyAsync(userUpdateDto.Key)).ReturnsAsync(user);
-            _mockUserBusinessRules.Setup(r => r.ValidateUpdatedUserAsync(userUpdateDto)).ReturnsAsync((false, "Email is already in use."));
+            _mockUserDataService
+                .Setup(s => s.GetUserByKeyAsync(userUpdateDto.Key))
+                .ReturnsAsync(user);
+
+            _mockUserBusinessRules
+                .Setup(r => r.ValidateUpdatedUserAsync(userUpdateDto))
+                .ReturnsAsync((false, "Email is already in use."));
 
             // Act
             var result = await _userController.UpdateUserAsync(userUpdateDto.Key, userUpdateDto);
@@ -380,11 +407,24 @@ namespace APITests.Controllers
             var userUpdateDto = GetSampleUserUpdateDto();
             var user = GetSampleUser();
 
-            _mockUserDataService.Setup(s => s.GetUserByKeyAsync(userUpdateDto.Key)).ReturnsAsync(user);
-            _mockUserBusinessRules.Setup(r => r.ValidateUpdatedUserAsync(userUpdateDto)).ReturnsAsync((true, null));
-            _mockMapper.Setup(m => m.Map(userUpdateDto, user));
-            _mockUserSecurityService.Setup(s => s.NeedsRehash(user, userUpdateDto.Password)).Returns(false);
-            _mockUserDataService.Setup(s => s.UpdateUserAsync(user)).ThrowsAsync(new DbUpdateConcurrencyException());
+            _mockUserDataService
+                .Setup(s => s.GetUserByKeyAsync(userUpdateDto.Key))
+                .ReturnsAsync(user);
+
+            _mockUserBusinessRules
+                .Setup(r => r.ValidateUpdatedUserAsync(userUpdateDto))
+                .ReturnsAsync((true, null));
+
+            _mockMapper
+                .Setup(m => m.Map(userUpdateDto, user));
+
+            _mockUserSecurityService
+                .Setup(s => s.NeedsRehash(user, userUpdateDto.Password))
+                .Returns(false);
+
+            _mockUserDataService
+                .Setup(s => s.UpdateUserAsync(user))
+                .ThrowsAsync(new DbUpdateConcurrencyException());
 
             // Act
             var result = await _userController.UpdateUserAsync(userUpdateDto.Key, userUpdateDto);
@@ -404,7 +444,10 @@ namespace APITests.Controllers
         {
             // Arrange
             int key = 123;
-            _mockUserDataService.Setup(s => s.GetUserByKeyAsync(key)).ReturnsAsync((User?)null);
+
+            _mockUserDataService
+                .Setup(s => s.GetUserByKeyAsync(key))
+                .ReturnsAsync((User?)null);
 
             // Act
             var result = await _userController.DeleteUserAsync(key);
@@ -419,8 +462,14 @@ namespace APITests.Controllers
         {
             // Arrange
             var user = GetSampleUser();
-            _mockUserDataService.Setup(s => s.GetUserByKeyAsync(user.Key)).ReturnsAsync(user);
-            _mockUserDataService.Setup(s => s.DeleteUserAsync(user.Key)).Returns(Task.CompletedTask);
+
+            _mockUserDataService
+                .Setup(s => s.GetUserByKeyAsync(user.Key))
+                .ReturnsAsync(user);
+
+            _mockUserDataService
+                .Setup(s => s.DeleteUserAsync(user.Key))
+                .Returns(Task.CompletedTask);
 
             // Act
             var result = await _userController.DeleteUserAsync(user.Key);
