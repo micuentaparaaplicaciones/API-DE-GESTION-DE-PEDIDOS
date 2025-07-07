@@ -10,11 +10,16 @@ namespace API.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<Category> Categories { get; set; }
+
+        public DbSet<Supplier> Suppliers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ConfigureUser(modelBuilder);
             ConfigureCustomer(modelBuilder);
+            ConfigureCategory(modelBuilder);
+            ConfigureSupplier(modelBuilder);
         }
 
         private void ConfigureUser(ModelBuilder modelBuilder)
@@ -189,5 +194,118 @@ namespace API.Data
 
             });
         }
+
+        private void ConfigureCategory(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.ToTable("CATEGORIES");
+
+                entity.HasKey(c => c.Key);
+
+                entity.Property(c => c.Key)
+                    .HasColumnName("KEY")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(c => c.Name)
+                    .HasColumnName("NAME")
+                    .HasMaxLength(100)
+                    .IsRequired();
+
+                entity.HasIndex(c => c.Name).IsUnique();
+
+                entity.Property(c => c.RegistrationDate)
+                    .HasColumnName("REGISTRATIONDATE")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(c => c.ModificationDate)
+                    .HasColumnName("MODIFICATIONDATE")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(c => c.CreatedBy)
+                    .HasColumnName("CREATEDBY");
+
+                entity.Property(c => c.ModifiedBy)
+                    .HasColumnName("MODIFIEDBY");
+
+                entity.Property(c => c.RowVersion)
+                    .HasColumnName("ROWVERSION")
+                    .HasDefaultValue(0)
+                    .IsConcurrencyToken();
+
+                entity.HasOne(c => c.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(c => c.CreatedBy)
+                    //.OnDelete(DeleteBehavior.Restrict)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("FK_CATEGORIES_CREATEDBY");
+
+                entity.HasOne(c => c.ModifiedByUser)
+                    .WithMany()
+                    .HasForeignKey(c => c.ModifiedBy)
+                    //.OnDelete(DeleteBehavior.Restrict)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("FK_CATEGORIES_MODIFIEDBY");
+            });
+        }
+
+        private void ConfigureSupplier(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Supplier>(entity =>
+            {
+                entity.ToTable("SUPPLIERS");
+
+                entity.HasKey(s => s.Key);
+
+                entity.Property(s => s.Key)
+                    .HasColumnName("KEY")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(s => s.Name)
+                    .HasColumnName("NAME")
+                    .HasMaxLength(100)
+                    .IsRequired();
+
+                entity.HasIndex(s => s.Name).IsUnique();
+
+                entity.Property(s => s.RegistrationDate)
+                    .HasColumnName("REGISTRATIONDATE")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(s => s.ModificationDate)
+                    .HasColumnName("MODIFICATIONDATE")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(s => s.CreatedBy)
+                    .HasColumnName("CREATEDBY");
+
+                entity.Property(s => s.ModifiedBy)
+                    .HasColumnName("MODIFIEDBY");
+
+                entity.Property(s => s.RowVersion)
+                    .HasColumnName("ROWVERSION")
+                    .HasDefaultValue(0)
+                    .IsConcurrencyToken();
+
+                entity.HasOne(s => s.CreatedByUser)
+                    .WithMany()
+                    .HasForeignKey(c => c.CreatedBy)
+                    //.OnDelete(DeleteBehavior.Restrict)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("FK_SUPPLIERS_CREATEDBY");
+
+                entity.HasOne(s => s.ModifiedByUser)
+                    .WithMany()
+                    .HasForeignKey(c => c.ModifiedBy)
+                    //.OnDelete(DeleteBehavior.Restrict)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("FK_SUPPLIERS_MODIFIEDBY");
+            });
+        }
+
     }
 }

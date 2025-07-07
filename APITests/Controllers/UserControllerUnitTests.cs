@@ -127,8 +127,13 @@ namespace APITests.Controllers
             var user = GetSampleUser();
             var userReadDto = GetSampleUserReadDto();
 
-            _mockUserDataService.Setup(s => s.GetUserByKeyAsync(user.Key)).ReturnsAsync(user);
-            _mockMapper.Setup(m => m.Map<UserReadDto>(user)).Returns(userReadDto);
+            _mockUserDataService
+                .Setup(s => s.GetUserByKeyAsync(user.Key))
+                .ReturnsAsync(user);
+
+            _mockMapper
+                .Setup(m => m.Map<UserReadDto>(user))
+                .Returns(userReadDto);
 
             // Act
             var result = await _userController.GetUserByKeyAsync(user.Key);
@@ -137,16 +142,19 @@ namespace APITests.Controllers
             var okResult = result.Result as OkObjectResult; 
             Assert.IsNotNull(okResult);
             Assert.AreEqual(userReadDto, okResult.Value);
+
             _mockUserDataService.Verify(s => s.GetUserByKeyAsync(user.Key), Times.Once);
         }
 
         [TestMethod]
-        public async Task GetUserByKeyAsync_ReturnsNotFound_WhenUserDoesNotExist()
+        public async Task GetUserByKeyAsync_ReturnsNotFound_WhenUserNotFound()
         {
             // Arrange
             int key = 0; // Non-existent key
 
-            _mockUserDataService.Setup(s => s.GetUserByKeyAsync(key)).ReturnsAsync((User?)null);
+            _mockUserDataService
+                .Setup(s => s.GetUserByKeyAsync(key))
+                .ReturnsAsync((User?)null);
 
             // Act
             var result = await _userController.GetUserByKeyAsync(key);
@@ -154,7 +162,118 @@ namespace APITests.Controllers
             // Assert
             var notFoundResult = result.Result as NotFoundObjectResult;
             Assert.IsNotNull(notFoundResult);
+
             _mockUserDataService.Verify(s => s.GetUserByKeyAsync(key), Times.Once);
+        }
+
+        #endregion
+
+        #region GetUserByIdentificationAsync
+
+        /// <summary>
+        /// The GetUserByIdentificationAsync method in UserController returns a Task<ActionResult<UserReadDto>>,
+        /// which is a wrapper (ActionResult<T>). To access the underlying OkObjectResult,
+        /// you need to use `.Result` like this: `result.Result as OkObjectResult`.
+        /// </summary>
+        [TestMethod]
+        public async Task GetUserByIdentificationAsync_ReturnsOkWithUser()
+        {
+            // Arrange
+            var user = GetSampleUser();
+            var userReadDto = GetSampleUserReadDto();
+
+            _mockUserDataService
+                .Setup(s => s.GetUserByIdentificationAsync(user.Identification))
+                .ReturnsAsync(user);
+
+            _mockMapper
+                .Setup(m => m.Map<UserReadDto>(user))
+                .Returns(userReadDto);
+
+            // Act
+            var result = await _userController.GetUserByIdentificationAsync(user.Identification);
+
+            // Assert
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(userReadDto, okResult.Value);
+
+            _mockUserDataService.Verify(s => s.GetUserByIdentificationAsync(user.Identification), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetUserByIdentificationAsync_ReturnsNotFound_WhenUserNotFound()
+        {
+            // Arrange
+            string identification = "Unknown"; // Non-existent identification
+
+            _mockUserDataService
+                .Setup(s => s.GetUserByIdentificationAsync(identification))
+                .ReturnsAsync((User?)null);
+
+            // Act
+            var result = await _userController.GetUserByIdentificationAsync(identification);
+
+            // Assert
+            var notFound = result.Result as NotFoundObjectResult;
+            Assert.IsNotNull(notFound);
+
+            _mockUserDataService.Verify(s => s.GetUserByIdentificationAsync(identification), Times.Once);
+        }
+
+        #endregion
+
+        #region GetUserByEmailAsync
+
+        /// <summary>
+        /// The GetUserByEmailAsync method in UserController returns a Task<ActionResult<UserReadDto>>,
+        /// which is a wrapper (ActionResult<T>). To access the underlying OkObjectResult,
+        /// you need to use `.Result` like this: `result.Result as OkObjectResult`.
+        /// </summary>
+        [TestMethod]
+        public async Task GetUserByEmailAsync_ReturnsOkWithUser()
+        {
+            // Arrange
+            var user = GetSampleUser();
+            var userReadDto = GetSampleUserReadDto();
+
+            _mockUserDataService
+                .Setup(s => s.GetUserByEmailAsync(user.Email))
+                .ReturnsAsync(user);
+
+            _mockMapper
+                .Setup(m => m.Map<UserReadDto>(user))
+                .Returns(userReadDto);
+
+            // Act
+            var result = await _userController.GetUserByEmailAsync(user.Email);
+
+            // Assert
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(userReadDto, okResult.Value);
+
+            _mockUserDataService.Verify(s => s.GetUserByEmailAsync(user.Email), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetUserByEmailAsync_ReturnsNotFound_WhenUserNotFound()
+        {
+            // Arrange
+            string email = "notfound@user.com"; // Non-existent email
+
+            _mockUserDataService
+                .Setup(s => s.GetUserByEmailAsync(email))
+                .ReturnsAsync((User?)null);
+
+            // Act
+            var result = await _userController.GetUserByEmailAsync(email);
+
+            // Assert
+            var notFound = result.Result as NotFoundObjectResult;
+            Assert.IsNotNull(notFound);
+
+            _mockUserDataService.Verify(s => s.GetUserByEmailAsync(email), Times.Once);
         }
 
         #endregion
@@ -168,8 +287,13 @@ namespace APITests.Controllers
             var users = new List<User> { GetSampleUser() };
             var userReadDtos = new List<UserReadDto> { GetSampleUserReadDto() };
 
-            _mockUserDataService.Setup(s => s.GetAllUsersAsync()).ReturnsAsync(users);
-            _mockMapper.Setup(m => m.Map<List<UserReadDto>>(users)).Returns(userReadDtos);
+            _mockUserDataService
+                .Setup(s => s.GetAllUsersAsync())
+                .ReturnsAsync(users);
+
+            _mockMapper
+                .Setup(m => m.Map<List<UserReadDto>>(users))
+                .Returns(userReadDtos);
 
             // Act
             var result = await _userController.GetAllUsersAsync();
@@ -178,18 +302,24 @@ namespace APITests.Controllers
             var okResult = result.Result as OkObjectResult;
             Assert.IsNotNull(okResult);
             CollectionAssert.AreEqual(userReadDtos, (List<UserReadDto>)okResult.Value!);
+
             _mockUserDataService.Verify(s => s.GetAllUsersAsync(), Times.Once);
         }
 
         [TestMethod] 
-        public async Task GetAllUsersAsync_ReturnsNotFound_WhenNoUsersExist()
+        public async Task GetAllUsersAsync_ReturnsNotFound_WhenUsersNotFound()
         {
             // Arrange
             var users = new List<User>();
             var userReadDtos = new List<UserReadDto>();
 
-            _mockUserDataService.Setup(s => s.GetAllUsersAsync()).ReturnsAsync(users);
-            _mockMapper.Setup(m => m.Map<List<UserReadDto>>(users)).Returns(userReadDtos);
+            _mockUserDataService
+                .Setup(s => s.GetAllUsersAsync())
+                .ReturnsAsync(users);
+
+            _mockMapper
+                .Setup(m => m.Map<List<UserReadDto>>(users))
+                .Returns(userReadDtos);
 
             // Act
             var result = await _userController.GetAllUsersAsync();
@@ -197,6 +327,7 @@ namespace APITests.Controllers
             // Assert
             var notFoundResult = result.Result as NotFoundObjectResult;
             Assert.IsNotNull(notFoundResult);
+
             _mockUserDataService.Verify(s => s.GetAllUsersAsync(), Times.Once);
         }
 
@@ -205,7 +336,7 @@ namespace APITests.Controllers
         #region AddUserAsync
 
         [TestMethod]
-        public async Task AddUserAsync_ReturnsCreatedAtRoute_WhenUserIsAdded()
+        public async Task AddUserAsync_ReturnsCreatedAtRoute_WhenUserAdded()
         {
             // Arrange
             var userCreateDto = GetSampleUserCreateDto();
@@ -246,7 +377,7 @@ namespace APITests.Controllers
         }
 
         [TestMethod]
-        public async Task AddUserAsync_ReturnsBadRequest_WhenModelStateIsInvalid()
+        public async Task AddUserAsync_ReturnsBadRequest_WhenModelStateInvalid()
         {
             // Arrange
             _userController.ModelState.AddModelError("Name", "Required");
@@ -258,11 +389,12 @@ namespace APITests.Controllers
             // Assert
             var badRequest = result.Result as BadRequestObjectResult;
             Assert.IsNotNull(badRequest);
+
             // It's fine not to call .Verify() because you don't expect the service to be called if the ModelState is invalid.
         }
 
         [TestMethod]
-        public async Task AddUserAsync_ReturnsBadRequest_WhenBusinessRulesValidationFails()
+        public async Task AddUserAsync_ReturnsBadRequest_WhenBusinessRulesFailed()
         {
             // Arrange
             var userCreateDto = GetSampleUserCreateDto();
@@ -292,7 +424,7 @@ namespace APITests.Controllers
         /// so the result object is already a NoContentResult if the update is successful.
         /// </summary>
         [TestMethod]
-        public async Task UpdateUserAsync_ReturnsNoContent_WhenSuccessful()
+        public async Task UpdateUserAsync_ReturnsNoContent_WhenUserUpdated()
         {
             // Arrange
             var userUpdateDto = GetSampleUserUpdateDto();
@@ -329,7 +461,7 @@ namespace APITests.Controllers
         }
 
         [TestMethod]
-        public async Task UpdateUserAsync_ReturnsBadRequest_WhenModelStateIsInvalid()
+        public async Task UpdateUserAsync_ReturnsBadRequest_WhenModelStateInvalid()
         {
             // Arrange
             var userUpdateDto = GetSampleUserUpdateDto();
@@ -359,7 +491,7 @@ namespace APITests.Controllers
         }
 
         [TestMethod]
-        public async Task UpdateUserAsync_ReturnsNotFound_WhenUserDoesNotExist()
+        public async Task UpdateUserAsync_ReturnsNotFound_WhenUserNotFound()
         {
             // Arrange
             var userUpdateDto = GetSampleUserUpdateDto();
@@ -377,7 +509,7 @@ namespace APITests.Controllers
         }
 
         [TestMethod]
-        public async Task UpdateUserAsync_ReturnsBadRequest_WhenBusinessRulesValidationFails()
+        public async Task UpdateUserAsync_ReturnsBadRequest_WhenBusinessRulesFailed()
         {
             // Arrange
             var userUpdateDto = GetSampleUserUpdateDto();
@@ -397,11 +529,11 @@ namespace APITests.Controllers
             // Assert
             var badRequest = result as BadRequestObjectResult;
             Assert.IsNotNull(badRequest);
-            StringAssert.Contains(badRequest.Value?.ToString(), "Email is already in use");
+            StringAssert.Contains(badRequest.Value?.ToString(), "Email is already in use.");
         }
 
         [TestMethod]
-        public async Task UpdateUserAsync_ReturnsConflict_WhenConcurrencyExceptionIsThrown()
+        public async Task UpdateUserAsync_ReturnsConflict_WhenConcurrencyExceptionThrown()
         {
             // Arrange
             var userUpdateDto = GetSampleUserUpdateDto();
@@ -440,7 +572,7 @@ namespace APITests.Controllers
         #region DeleteUserAsync
 
         [TestMethod]
-        public async Task DeleteUserAsync_ReturnsNotFound_WhenUserDoesNotExist()
+        public async Task DeleteUserAsync_ReturnsNotFound_WhenUserNotFound()
         {
             // Arrange
             int key = 123;
@@ -458,7 +590,7 @@ namespace APITests.Controllers
         }
 
         [TestMethod]
-        public async Task DeleteUserAsync_ReturnsNoContent_WhenUserExists()
+        public async Task DeleteUserAsync_ReturnsNoContent_WhenUserDeleted()
         {
             // Arrange
             var user = GetSampleUser();
@@ -476,6 +608,7 @@ namespace APITests.Controllers
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(NoContentResult));
+
             _mockUserDataService.Verify(s => s.DeleteUserAsync(user.Key), Times.Once);
         }
 

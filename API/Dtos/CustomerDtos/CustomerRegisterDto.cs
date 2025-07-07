@@ -26,7 +26,9 @@ namespace API.Dtos.CustomerDtos
         public string Address { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(256, MinimumLength = 6)]
+        
+        //[StringLength(256, MinimumLength = 6)]
+        [StringLength(256)]
         public string Password { get; set; } = string.Empty;
     }
 }

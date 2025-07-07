@@ -1,3 +1,4 @@
+// 6-7-2025 13:00 lunch probar en swagger 
 using API.BusinessRules;
 using API.BusinessRules.Interfaces;
 using API.Data;
@@ -34,11 +35,23 @@ builder.Services.AddScoped<IUserDataService, UserDataService>();
 /// Add ICustomerDataService with CustomerDataService implementation
 builder.Services.AddScoped<ICustomerDataService, CustomerDataService>();
 
+// Add ICategoryDataService with CategoryDataService implementation 
+builder.Services.AddScoped<ICategoryDataService, CategoryDataService>();
+
+// Add ISupplierDataService with SupplierDataService implementation 
+builder.Services.AddScoped<ISupplierDataService, SupplierDataService>();
+
 /// Add IUserBusinessRules with UserBusinessRules implementation
 builder.Services.AddScoped<IUserBusinessRules, UserBusinessRules>();
 
 /// Add ICutomerBusinessRules with CustomerBusinessRules implementation
 builder.Services.AddScoped<ICustomerBusinessRules, CustomerBusinessRules>();
+
+/// Add ICategoryBusinessRules with CategoryBusinessRules implementation
+builder.Services.AddScoped<ICategoryBusinessRules, CategoryBusinessRules>();
+
+/// Add ISupplierBusinessRules with SupplierBusinessRules implementation
+builder.Services.AddScoped<ISupplierBusinessRules, SupplierBusinessRules>();
 
 /// Add IUserSecurity with UserSecurity implementation
 builder.Services.AddScoped<IUserSecurityService, UserSecurityService>();

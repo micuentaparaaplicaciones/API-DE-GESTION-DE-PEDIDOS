@@ -1,6 +1,7 @@
 ﻿using API.BusinessRules.Interfaces;
 using API.Controllers;
 using API.DataServices.Interfaces;
+using API.Dtos.CategoryDtos;
 using API.Dtos.CustomerDtos;
 using API.Entities;
 using API.Security.Interfaces;
@@ -119,8 +120,13 @@ namespace APITests.Controllers
             var customer = GetSampleCustomer();
             var customerReadDto = GetSampleCustomerReadDto();
 
-            _mockCustomerDataService.Setup(s => s.GetCustomerByKeyAsync(customer.Key)).ReturnsAsync(customer);
-            _mockMapper.Setup(m => m.Map<CustomerReadDto>(customer)).Returns(customerReadDto);
+            _mockCustomerDataService
+                .Setup(s => s.GetCustomerByKeyAsync(customer.Key))
+                .ReturnsAsync(customer);
+
+            _mockMapper
+                .Setup(m => m.Map<CustomerReadDto>(customer))
+                .Returns(customerReadDto);
 
             // Act
             var result = await _customerController.GetCustomerByKeyAsync(customer.Key);
@@ -129,16 +135,19 @@ namespace APITests.Controllers
             var okResult = result.Result as OkObjectResult;
             Assert.IsNotNull(okResult);
             Assert.AreEqual(customerReadDto, okResult.Value);
+
             _mockCustomerDataService.Verify(s => s.GetCustomerByKeyAsync(customer.Key), Times.Once);
         }
 
         [TestMethod]
-        public async Task GetCustomerByKeyAsync_ReturnsNotFound_WhenCustomerDoesNotExist()
+        public async Task GetCustomerByKeyAsync_ReturnsNotFound_WhenCustomerNotFound()
         {
             // Arrange
             int key = 0; // Non-existent key
 
-            _mockCustomerDataService.Setup(s => s.GetCustomerByKeyAsync(key)).ReturnsAsync((Customer?)null);
+            _mockCustomerDataService
+                .Setup(s => s.GetCustomerByKeyAsync(key))
+                .ReturnsAsync((Customer?)null);
 
             // Act
             var result = await _customerController.GetCustomerByKeyAsync(key);
@@ -146,7 +155,118 @@ namespace APITests.Controllers
             // Assert
             var notFoundResult = result.Result as NotFoundObjectResult;
             Assert.IsNotNull(notFoundResult);
+
             _mockCustomerDataService.Verify(s => s.GetCustomerByKeyAsync(key), Times.Once);
+        }
+
+        #endregion
+
+        #region GetCustomerByIdentificationAsync
+
+        /// <summary>
+        /// The GetCustomerByIdentificationAsync method in CustomerController returns a Task<ActionResult<CustomerReadDto>>,
+        /// which is a wrapper (ActionResult<T>). To access the underlying OkObjectResult,
+        /// you need to use `.Result` like this: `result.Result as OkObjectResult`.
+        /// </summary>
+        [TestMethod]
+        public async Task GetCustomerByIdentificationAsync_ReturnsOkWithCustomer()
+        {
+            // Arrange
+            var customer = GetSampleCustomer();
+            var customerReadDto = GetSampleCustomerReadDto();
+
+            _mockCustomerDataService
+                .Setup(s => s.GetCustomerByIdentificationAsync(customer.Identification))
+                .ReturnsAsync(customer);
+
+            _mockMapper
+                .Setup(m => m.Map<CustomerReadDto>(customer))
+                .Returns(customerReadDto);
+
+            // Act
+            var result = await _customerController.GetCustomerByIdentificationAsync(customer.Identification);
+
+            // Assert
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(customerReadDto, okResult.Value);
+
+            _mockCustomerDataService.Verify(s => s.GetCustomerByIdentificationAsync(customer.Identification), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetCustomerByIdentificationAsync_ReturnsNotFound_WhenCustomerNotFound()
+        {
+            // Arrange
+            string identification = "Unknown"; // Non-existent identification
+
+            _mockCustomerDataService
+                .Setup(s => s.GetCustomerByIdentificationAsync(identification))
+                .ReturnsAsync((Customer?)null);
+
+            // Act
+            var result = await _customerController.GetCustomerByIdentificationAsync(identification);
+
+            // Assert
+            var notFound = result.Result as NotFoundObjectResult;
+            Assert.IsNotNull(notFound);
+
+            _mockCustomerDataService.Verify(s => s.GetCustomerByIdentificationAsync(identification), Times.Once);
+        }
+
+        #endregion
+
+        #region GetCustomerByEmailAsync
+
+        /// <summary>
+        /// The GetCustomerByEmailAsync method in CustomerController returns a Task<ActionResult<CustomerReadDto>>,
+        /// which is a wrapper (ActionResult<T>). To access the underlying OkObjectResult,
+        /// you need to use `.Result` like this: `result.Result as OkObjectResult`.
+        /// </summary>
+        [TestMethod]
+        public async Task GetCustomerByEmailAsync_ReturnsOkWithCustomer()
+        {
+            // Arrange
+            var customer = GetSampleCustomer();
+            var customerReadDto = GetSampleCustomerReadDto();
+
+            _mockCustomerDataService
+                .Setup(s => s.GetCustomerByEmailAsync(customer.Email))
+                .ReturnsAsync(customer);
+
+            _mockMapper
+                .Setup(m => m.Map<CustomerReadDto>(customer))
+                .Returns(customerReadDto);
+
+            // Act
+            var result = await _customerController.GetCustomerByEmailAsync(customer.Email);
+
+            // Assert
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(customerReadDto, okResult.Value);
+
+            _mockCustomerDataService.Verify(s => s.GetCustomerByEmailAsync(customer.Email), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetCustomerByEmailAsync_ReturnsNotFound_WhenCustomerNotFound()
+        {
+            // Arrange
+            string email = "notfound@customer.com"; // Non-existent email
+
+            _mockCustomerDataService
+                .Setup(s => s.GetCustomerByEmailAsync(email))
+                .ReturnsAsync((Customer?)null);
+
+            // Act
+            var result = await _customerController.GetCustomerByEmailAsync(email);
+
+            // Assert
+            var notFound = result.Result as NotFoundObjectResult;
+            Assert.IsNotNull(notFound);
+
+            _mockCustomerDataService.Verify(s => s.GetCustomerByEmailAsync(email), Times.Once);
         }
 
         #endregion
@@ -160,8 +280,13 @@ namespace APITests.Controllers
             var customers = new List<Customer> { GetSampleCustomer() };
             var customerReadDtos = new List<CustomerReadDto> { GetSampleCustomerReadDto() };
 
-            _mockCustomerDataService.Setup(s => s.GetAllCustomersAsync()).ReturnsAsync(customers);
-            _mockMapper.Setup(m => m.Map<List<CustomerReadDto>>(customers)).Returns(customerReadDtos);
+            _mockCustomerDataService
+                .Setup(s => s.GetAllCustomersAsync())
+                .ReturnsAsync(customers);
+
+            _mockMapper
+                .Setup(m => m.Map<List<CustomerReadDto>>(customers))
+                .Returns(customerReadDtos);
 
             // Act
             var result = await _customerController.GetAllCustomersAsync();
@@ -170,18 +295,24 @@ namespace APITests.Controllers
             var okResult = result.Result as OkObjectResult;
             Assert.IsNotNull(okResult);
             CollectionAssert.AreEqual(customerReadDtos, (List<CustomerReadDto>)okResult.Value!);
+
             _mockCustomerDataService.Verify(s => s.GetAllCustomersAsync(), Times.Once);
         }
 
         [TestMethod]
-        public async Task GetAllCustomersAsync_ReturnsNotFound_WhenNoCustomersExist()
+        public async Task GetAllCustomersAsync_ReturnsNotFound_WhenCustomersNotFound()
         {
             // Arrange
             var customers = new List<Customer>();
             var customerReadDtos = new List<CustomerReadDto>();
 
-            _mockCustomerDataService.Setup(s => s.GetAllCustomersAsync()).ReturnsAsync(customers);
-            _mockMapper.Setup(m => m.Map<List<CustomerReadDto>>(customers)).Returns(customerReadDtos);
+            _mockCustomerDataService
+                .Setup(s => s.GetAllCustomersAsync())
+                .ReturnsAsync(customers);
+
+            _mockMapper
+                .Setup(m => m.Map<List<CustomerReadDto>>(customers))
+                .Returns(customerReadDtos);
 
             // Act
             var result = await _customerController.GetAllCustomersAsync();
@@ -189,6 +320,7 @@ namespace APITests.Controllers
             // Assert
             var notFoundResult = result.Result as NotFoundObjectResult;
             Assert.IsNotNull(notFoundResult);
+
             _mockCustomerDataService.Verify(s => s.GetAllCustomersAsync(), Times.Once);
         }
 
@@ -197,7 +329,7 @@ namespace APITests.Controllers
         #region AddCustomerAsync
 
         [TestMethod]
-        public async Task AddCustomerAsync_ReturnsCreatedAtRoute_WhenCustomerIsAdded()
+        public async Task AddCustomerAsync_ReturnsCreatedAtRoute_WhenCustomerAdded()
         {
             // Arrange
             var customerCreateDto = GetSampleCustomerCreateDto();
@@ -238,7 +370,7 @@ namespace APITests.Controllers
         }
 
         [TestMethod]
-        public async Task AddCustomerAsync_ReturnsBadRequest_WhenModelStateIsInvalid()
+        public async Task AddCustomerAsync_ReturnsBadRequest_WhenModelStateInvalid()
         {
             // Arrange
             _customerController.ModelState.AddModelError("Name", "Required");
@@ -254,7 +386,7 @@ namespace APITests.Controllers
         }
 
         [TestMethod]
-        public async Task AddCustomerAsync_ReturnsBadRequest_WhenBusinessRulesValidationFails()
+        public async Task AddCustomerAsync_ReturnsBadRequest_WhenBusinessRulesFailed()
         {
             // Arrange
             var customerCreateDto = GetSampleCustomerCreateDto();
@@ -284,7 +416,7 @@ namespace APITests.Controllers
         /// so the result object is already a NoContentResult if the update is successful.
         /// </summary>
         [TestMethod]
-        public async Task UpdateCustomerAsync_ReturnsNoContent_WhenSuccessful()
+        public async Task UpdateCustomerAsync_ReturnsNoContent_WhenCustomerUpdated()
         {
             // Arrange
             var customerUpdateDto = GetSampleCustomerUpdateDto();
@@ -320,7 +452,7 @@ namespace APITests.Controllers
         }
 
         [TestMethod]
-        public async Task UpdateCustomerAsync_ReturnsBadRequest_WhenModelStateIsInvalid()
+        public async Task UpdateCustomerAsync_ReturnsBadRequest_WhenModelStateInvalid()
         {
             // Arrange
             var customerUpdateDto = GetSampleCustomerUpdateDto();
@@ -350,7 +482,7 @@ namespace APITests.Controllers
         }
 
         [TestMethod]
-        public async Task UpdateCustomerAsync_ReturnsNotFound_WhenCustomerDoesNotExist()
+        public async Task UpdateCustomerAsync_ReturnsNotFound_WhenCustomerNotFound()
         {
             // Arrange
             var customerUpdateDto = GetSampleCustomerUpdateDto();
@@ -368,7 +500,7 @@ namespace APITests.Controllers
         }
 
         [TestMethod]
-        public async Task UpdateCustomerAsync_ReturnsBadRequest_WhenBusinessRulesValidationFails()
+        public async Task UpdateCustomerAsync_ReturnsBadRequest_WhenBusinessRulesFailed()
         {
             // Arrange
             var customerUpdateDto = GetSampleCustomerUpdateDto();
@@ -392,7 +524,7 @@ namespace APITests.Controllers
         }
 
         [TestMethod]
-        public async Task UpdateCustomerAsync_ReturnsConflict_WhenConcurrencyExceptionIsThrown()
+        public async Task UpdateCustomerAsync_ReturnsConflict_WhenConcurrencyExceptionThrown()
         {
             // Arrange
             var customerUpdateDto = GetSampleCustomerUpdateDto();
@@ -430,7 +562,7 @@ namespace APITests.Controllers
         #region DeleteCustomerAsync
 
         [TestMethod]
-        public async Task DeleteCustomerAsync_ReturnsNotFound_WhenCustomerDoesNotExist()
+        public async Task DeleteCustomerAsync_ReturnsNotFound_WhenCustomerNotFound()
         {
             // Arrange
             int key = 123;
@@ -448,7 +580,7 @@ namespace APITests.Controllers
         }
 
         [TestMethod]
-        public async Task DeleteCustomerAsync_ReturnsNoContent_WhenCustomerExists()
+        public async Task DeleteCustomerAsync_ReturnsNoContent_WhenCustomerDeleted()
         {
             // Arrange
             var customer = GetSampleCustomer();
@@ -466,6 +598,7 @@ namespace APITests.Controllers
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(NoContentResult));
+
             _mockCustomerDataService.Verify(s => s.DeleteCustomerAsync(customer.Key), Times.Once);
         }
 

@@ -82,7 +82,7 @@ namespace API.DataServices
             {
                 _applicationDbContext.Users.Remove(user);
                 await _applicationDbContext.SaveChangesAsync();
-            }
+            } 
         }
     }
 }
