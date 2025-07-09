@@ -48,10 +48,10 @@ namespace APITests.Controllers
                 Phone = "55551111",
                 Address = "Customer Address",
                 Password = "password",
-                RegistrationDate = DateTime.UtcNow,
+                CreationDate = DateTime.UtcNow,
                 ModificationDate = DateTime.UtcNow,
-                CreatedBy = null,
-                ModifiedBy = null,
+                CreatedBy = 0,
+                ModifiedBy = 0,
                 RowVersion = 0
             };
         }
@@ -66,7 +66,7 @@ namespace APITests.Controllers
                 Phone = "55551111",
                 Address = "Customer Address",
                 Password = "password",
-                CreatedBy = null
+                CreatedBy = 0
             };
         }
 
@@ -81,7 +81,7 @@ namespace APITests.Controllers
                 Phone = "55551111",
                 Address = "Customer Address",
                 Password = "password",
-                ModifiedBy = null,
+                ModifiedBy = 0,
                 RowVersion = 0
             };
         }
@@ -96,10 +96,10 @@ namespace APITests.Controllers
                 Email = $"{identification.ToLower()}@example.com",
                 Phone = "55551111",
                 Address = "Customer Address",
-                RegistrationDate = DateTime.UtcNow,
+                CreationDate = DateTime.UtcNow,
                 ModificationDate = DateTime.UtcNow,
-                CreatedBy = null,
-                ModifiedBy = null,
+                CreatedBy = 0,
+                ModifiedBy = 0,
                 RowVersion = 0
             };
         }

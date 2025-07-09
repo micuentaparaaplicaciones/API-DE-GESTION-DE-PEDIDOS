@@ -11,7 +11,6 @@ namespace API.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Category> Categories { get; set; }
-
         public DbSet<Supplier> Suppliers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -76,7 +75,7 @@ namespace API.Data
                     .IsRequired();
 
                 entity.Property(u => u.RegistrationDate)
-                    .HasColumnName("REGISTRATIONDATE")
+                    .HasColumnName("CREATIONDATE")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
 
@@ -158,8 +157,8 @@ namespace API.Data
                     .HasMaxLength(256)
                     .IsRequired();
 
-                entity.Property(c => c.RegistrationDate)
-                    .HasColumnName("REGISTRATIONDATE")
+                entity.Property(c => c.CreationDate)
+                    .HasColumnName("CREATIONDATE")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
 
@@ -167,11 +166,13 @@ namespace API.Data
                     .HasColumnName("MODIFICATIONDATE")
                     .ValueGeneratedOnAddOrUpdate();
 
-                entity.Property(c => c.CreatedBy)
-                    .HasColumnName("CREATEDBY");
+                entity.Property(s => s.CreatedBy)
+                    .HasColumnName("CREATEDBY")
+                    .IsRequired();
 
-                entity.Property(c => c.ModifiedBy)
-                    .HasColumnName("MODIFIEDBY");
+                entity.Property(s => s.ModifiedBy)
+                    .HasColumnName("MODIFIEDBY")
+                    .IsRequired(false);
 
                 entity.Property(c => c.RowVersion)
                     .HasColumnName("ROWVERSION")
@@ -181,15 +182,13 @@ namespace API.Data
                 entity.HasOne(c => c.CreatedByUser)
                     .WithMany()
                     .HasForeignKey(c => c.CreatedBy)
-                    //.OnDelete(DeleteBehavior.Restrict)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_CUSTOMERS_CREATEDBY");
 
                 entity.HasOne(c => c.ModifiedByUser)
                     .WithMany()
                     .HasForeignKey(c => c.ModifiedBy)
-                    //.OnDelete(DeleteBehavior.Restrict)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_CUSTOMERS_MODIFIEDBY");
 
             });
@@ -198,6 +197,7 @@ namespace API.Data
         private void ConfigureCategory(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.ToTable("CATEGORIES");
@@ -215,8 +215,8 @@ namespace API.Data
 
                 entity.HasIndex(c => c.Name).IsUnique();
 
-                entity.Property(c => c.RegistrationDate)
-                    .HasColumnName("REGISTRATIONDATE")
+                entity.Property(c => c.CreationDate)
+                    .HasColumnName("CREATIONDATE")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
 
@@ -224,11 +224,13 @@ namespace API.Data
                     .HasColumnName("MODIFICATIONDATE")
                     .ValueGeneratedOnAddOrUpdate();
 
-                entity.Property(c => c.CreatedBy)
-                    .HasColumnName("CREATEDBY");
+                entity.Property(s => s.CreatedBy)
+                    .HasColumnName("CREATEDBY")
+                    .IsRequired();
 
-                entity.Property(c => c.ModifiedBy)
-                    .HasColumnName("MODIFIEDBY");
+                entity.Property(s => s.ModifiedBy)
+                    .HasColumnName("MODIFIEDBY")
+                    .IsRequired(false);
 
                 entity.Property(c => c.RowVersion)
                     .HasColumnName("ROWVERSION")
@@ -238,15 +240,13 @@ namespace API.Data
                 entity.HasOne(c => c.CreatedByUser)
                     .WithMany()
                     .HasForeignKey(c => c.CreatedBy)
-                    //.OnDelete(DeleteBehavior.Restrict)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_CATEGORIES_CREATEDBY");
 
                 entity.HasOne(c => c.ModifiedByUser)
                     .WithMany()
                     .HasForeignKey(c => c.ModifiedBy)
-                    //.OnDelete(DeleteBehavior.Restrict)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_CATEGORIES_MODIFIEDBY");
             });
         }
@@ -254,6 +254,7 @@ namespace API.Data
         private void ConfigureSupplier(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Supplier>(entity =>
             {
                 entity.ToTable("SUPPLIERS");
@@ -271,8 +272,8 @@ namespace API.Data
 
                 entity.HasIndex(s => s.Name).IsUnique();
 
-                entity.Property(s => s.RegistrationDate)
-                    .HasColumnName("REGISTRATIONDATE")
+                entity.Property(s => s.CreationDate)
+                    .HasColumnName("CREATIONDATE")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
 
@@ -281,10 +282,12 @@ namespace API.Data
                     .ValueGeneratedOnAddOrUpdate();
 
                 entity.Property(s => s.CreatedBy)
-                    .HasColumnName("CREATEDBY");
+                    .HasColumnName("CREATEDBY")
+                    .IsRequired();
 
                 entity.Property(s => s.ModifiedBy)
-                    .HasColumnName("MODIFIEDBY");
+                    .HasColumnName("MODIFIEDBY")
+                    .IsRequired(false);
 
                 entity.Property(s => s.RowVersion)
                     .HasColumnName("ROWVERSION")
@@ -294,18 +297,15 @@ namespace API.Data
                 entity.HasOne(s => s.CreatedByUser)
                     .WithMany()
                     .HasForeignKey(c => c.CreatedBy)
-                    //.OnDelete(DeleteBehavior.Restrict)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SUPPLIERS_CREATEDBY");
 
                 entity.HasOne(s => s.ModifiedByUser)
                     .WithMany()
                     .HasForeignKey(c => c.ModifiedBy)
-                    //.OnDelete(DeleteBehavior.Restrict)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SUPPLIERS_MODIFIEDBY");
             });
         }
-
     }
 }

@@ -11,8 +11,10 @@ namespace API.Dtos.SupplierDtos
         [StringLength(100)]
         public string Name { get; set; } = string.Empty;
 
-        public int? ModifiedBy { get; set; }
+        [Required]
+        public int ModifiedBy { get; set; }
 
+        [Required]
         public long RowVersion { get; set; }
     }
 }

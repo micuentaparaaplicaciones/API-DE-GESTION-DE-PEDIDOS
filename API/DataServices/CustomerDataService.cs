@@ -61,8 +61,8 @@ namespace API.DataServices
                               originalCustomer.Name != customer.Name ||
                               originalCustomer.Email != customer.Email ||
                               originalCustomer.Phone != customer.Phone ||
-                              originalCustomer.Address != customer.Address ||
-                              originalCustomer.ModifiedBy != customer.ModifiedBy;
+                              originalCustomer.Address != customer.Address; // ||
+                              //originalCustomer.ModifiedBy != customer.ModifiedBy;
 
             // If no real changes were made 
             if (!isModified)

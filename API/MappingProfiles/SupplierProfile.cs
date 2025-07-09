@@ -14,19 +14,20 @@ namespace API.MappingProfiles
             // CreateDto → Entity
             CreateMap<SupplierCreateDto, Supplier>()
                 .ForMember(dest => dest.Key, opt => opt.Ignore()) // Automatically generated
-                .ForMember(dest => dest.RegistrationDate, opt => opt.Ignore()) // Automatically set
+                .ForMember(dest => dest.CreationDate, opt => opt.Ignore()) // Automatically set
                 .ForMember(dest => dest.ModificationDate, opt => opt.Ignore()) // Automatically set
+                .ForMember(dest => dest.RowVersion, opt => opt.Ignore()) // Automatically generated
                 .ForMember(dest => dest.CreatedByUser, opt => opt.Ignore()) // Optional relationship
-                .ForMember(dest => dest.ModifiedByUser, opt => opt.Ignore()) // Optional relationship 
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore()); // Automatically generated
+                .ForMember(dest => dest.ModifiedByUser, opt => opt.Ignore()); // Optional relationship 
 
             // UpdateDto → Entity
             CreateMap<SupplierUpdateDto, Supplier>()
-                .ForMember(dest => dest.RegistrationDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreationDate, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
+                .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
                 .ForMember(dest => dest.CreatedByUser, opt => opt.Ignore())
-                .ForMember(dest => dest.ModifiedByUser, opt => opt.Ignore())
-                .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
+                .ForMember(dest => dest.ModifiedByUser, opt => opt.Ignore());
         }
     }
 }

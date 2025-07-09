@@ -24,19 +24,6 @@ namespace API.BusinessRules
             return (true, null);
         }
 
-        public async Task<(bool Success, string? ErrorMessage)> ValidateRegisterCustomerAsync(CustomerRegisterDto customerRegisterDto)
-        {
-            var existingIdentificationCustomer = await _userDataService.GetCustomerByIdentificationAsync(customerRegisterDto.Identification);
-            if (existingIdentificationCustomer != null)
-                return (false, "Identification is already in use.");
-
-            var existingEmailCustomer = await _userDataService.GetCustomerByEmailAsync(customerRegisterDto.Email);
-            if (existingEmailCustomer != null)
-                return (false, "Email is already in use.");
-
-            return (true, null);
-        }
-
         public async Task<(bool Success, string? ErrorMessage)> ValidateUpdatedCustomerAsync(CustomerUpdateDto customerUpdateDto)
         {
             var existingIdentificationCustomer = await _userDataService.GetCustomerByIdentificationAsync(customerUpdateDto.Identification);

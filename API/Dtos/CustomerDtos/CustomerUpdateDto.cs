@@ -32,8 +32,10 @@ namespace API.Dtos.CustomerDtos
         [StringLength(256)]
         public string Password { get; set; } = string.Empty;
 
-        public int? ModifiedBy { get; set; }
+        [Required]
+        public int ModifiedBy { get; set; }
 
+        [Required]
         public long RowVersion { get; set; }
     }
 }

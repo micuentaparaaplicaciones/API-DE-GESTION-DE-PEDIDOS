@@ -11,8 +11,10 @@ namespace API.Dtos.CategoryDtos
         [StringLength(100)]
         public string Name { get; set; } = string.Empty;
 
-        public int? ModifiedBy { get; set; }
+        [Required]
+        public int ModifiedBy { get; set; }
 
-        public long RowVersion { get; set; } 
+        [Required]
+        public long RowVersion { get; set; }
     }
 }

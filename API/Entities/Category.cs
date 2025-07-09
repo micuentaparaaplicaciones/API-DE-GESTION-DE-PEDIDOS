@@ -6,11 +6,11 @@
 
         public string Name { get; set; } = string.Empty;
 
-        public DateTime RegistrationDate { get; set; } // Automatically set
+        public DateTime CreationDate { get; set; } // Automatically set
 
         public DateTime? ModificationDate { get; set; } // Automatically set
 
-        public int? CreatedBy { get; set; }
+        public int CreatedBy { get; set; }
 
         public int? ModifiedBy { get; set; }
 

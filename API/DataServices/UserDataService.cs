@@ -62,8 +62,8 @@ namespace API.DataServices
                               originalUser.Email != user.Email ||
                               originalUser.Phone != user.Phone ||
                               originalUser.Address != user.Address ||
-                              originalUser.Role != user.Role ||
-                              originalUser.ModifiedBy != user.ModifiedBy;
+                              originalUser.Role != user.Role; // ||
+                              //originalUser.ModifiedBy != user.ModifiedBy;
 
             // If no real changes were made 
             if (!isModified)

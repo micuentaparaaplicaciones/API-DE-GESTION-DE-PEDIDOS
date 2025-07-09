@@ -41,19 +41,18 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<string>> RegisterAsync([FromBody] CustomerRegisterDto customerRegisterDto)
+        public async Task<ActionResult<string>> RegisterAsync([FromBody] CustomerCreateDto customerCreateDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var (Success, ErrorMessage) = await _customerBusinessRules.ValidateRegisterCustomerAsync(customerRegisterDto);
+            var (Success, ErrorMessage) = await _customerBusinessRules.ValidateNewCustomerAsync(customerCreateDto);
             if (!Success)
                 return BadRequest(new { message = ErrorMessage });
 
-            var customer = _mapper.Map<Customer>(customerRegisterDto);
+            var customer = _mapper.Map<Customer>(customerCreateDto);
 
-            customer.Password = _customerSecurityService.HashPassword(customer, customerRegisterDto.Password);
-            //customer.CreatedBy = 1; // Assuming 1 is the Key of user creating the customer, could be a default admin user
+            customer.Password = _customerSecurityService.HashPassword(customer, customerCreateDto.Password);
 
             await _customerDataService.AddCustomerAsync(customer);
 

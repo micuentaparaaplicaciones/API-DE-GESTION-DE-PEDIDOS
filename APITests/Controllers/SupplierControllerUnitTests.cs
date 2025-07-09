@@ -43,10 +43,10 @@ namespace APITests.Controllers
             {
                 Key = id,
                 Name = name,
-                RegistrationDate = DateTime.UtcNow,
+                CreationDate = DateTime.UtcNow,
                 ModificationDate = DateTime.UtcNow,
-                CreatedBy = null,
-                ModifiedBy = null,
+                CreatedBy = 0,
+                ModifiedBy = 0,
                 RowVersion = 0
             };
         }
@@ -56,7 +56,7 @@ namespace APITests.Controllers
             return new SupplierCreateDto
             {
                 Name = name,
-                CreatedBy = null
+                CreatedBy = 0
             };
         }
 
@@ -66,7 +66,7 @@ namespace APITests.Controllers
             {
                 Key = id,
                 Name = name,
-                ModifiedBy = null,
+                ModifiedBy = 0,
                 RowVersion = 0
             };
         }
@@ -77,10 +77,10 @@ namespace APITests.Controllers
             {
                 Key = id,
                 Name = name,
-                RegistrationDate = DateTime.UtcNow,
+                CreationDate = DateTime.UtcNow,
                 ModificationDate = DateTime.UtcNow,
-                CreatedBy = null,
-                ModifiedBy = null,
+                CreatedBy = 0,
+                ModifiedBy = 0,
                 RowVersion = 0
             };
         }

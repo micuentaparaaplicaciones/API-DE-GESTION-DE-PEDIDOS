@@ -29,6 +29,7 @@ namespace API.Dtos.CustomerDtos
         [StringLength(256)]
         public string Password { get; set; } = string.Empty;
 
-        public int? CreatedBy { get; set; }
+        [Required]
+        public int CreatedBy { get; set; }
     }
 }
