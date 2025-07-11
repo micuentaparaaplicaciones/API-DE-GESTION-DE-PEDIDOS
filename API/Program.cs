@@ -1,4 +1,4 @@
-// 6-7-2025 13:00 lunch probar en swagger 
+// 11-7-2025 10:00       product implemented faltan unit tests
 using API.BusinessRules;
 using API.BusinessRules.Interfaces;
 using API.Data;
@@ -29,6 +29,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseOracle(connectionString).LogTo(Console.WriteLine, LogLevel.Information);
 });
 
+
+
 /// Add IUserDataService with UserDataService implementation 
 builder.Services.AddScoped<IUserDataService, UserDataService>();
 
@@ -41,6 +43,11 @@ builder.Services.AddScoped<ICategoryDataService, CategoryDataService>();
 // Add ISupplierDataService with SupplierDataService implementation 
 builder.Services.AddScoped<ISupplierDataService, SupplierDataService>();
 
+// Add IProductDataService with ProductDataService implementation 
+builder.Services.AddScoped<IProductDataService, ProductDataService>();
+
+
+
 /// Add IUserBusinessRules with UserBusinessRules implementation
 builder.Services.AddScoped<IUserBusinessRules, UserBusinessRules>();
 
@@ -52,6 +59,11 @@ builder.Services.AddScoped<ICategoryBusinessRules, CategoryBusinessRules>();
 
 /// Add ISupplierBusinessRules with SupplierBusinessRules implementation
 builder.Services.AddScoped<ISupplierBusinessRules, SupplierBusinessRules>();
+
+/// Add IProductBusinessRules with ProductBusinessRules implementation
+builder.Services.AddScoped<IProductBusinessRules, ProductBusinessRules>();
+
+
 
 /// Add IUserSecurity with UserSecurity implementation
 builder.Services.AddScoped<IUserSecurityService, UserSecurityService>();

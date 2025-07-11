@@ -16,6 +16,7 @@ namespace API.MappingProfiles
                 .ForMember(dest => dest.Key, opt => opt.Ignore()) // Automatically generated
                 .ForMember(dest => dest.CreationDate, opt => opt.Ignore()) // Automatically set
                 .ForMember(dest => dest.ModificationDate, opt => opt.Ignore()) // Automatically set
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore()) // Not modified when created
                 .ForMember(dest => dest.RowVersion, opt => opt.Ignore()) // Automatically generated
                 .ForMember(dest => dest.CreatedByUser, opt => opt.Ignore()) // Optional relationship
                 .ForMember(dest => dest.ModifiedByUser, opt => opt.Ignore()); // Optional relationship 
